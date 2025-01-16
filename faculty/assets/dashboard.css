@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root{
+    /* COLORS */
+    --mainBlue: #212143;
+    --mainYellow: #ffbc03;
+    --mainGrey: #bfbfc0;
+    --hoverBlack: #505050;
+    --body: #f8f9fa;
+    --mainWhite: white;
+    --loginForm:  rgba(255, 255, 255, 0.9); /* TRANSPARENT */
+    --boxShadows: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+
+    /* FONTS */
+    --Poppins: 'Poppins', sans-serif;
+    --Roboto: 'Roboto', sans-serif;
+    --Oswald: 'Oswald', sans-serif;
+    
+    /*  */
+
+}
+/* SIDEBAR */
+
+.sidebar {
+    position: fixed; /* Prevents sidebar from pushing content */
+    top: 0; 
+    left: 0;
+    bottom: 0;
+    width: 80px; /* Default width */
+    height: 100vh;
+    padding: 0 1rem;
+    color: var(--mainWhite);
+    overflow: hidden;
+    transition: all 0.5s linear;
+    background: var(--mainBlue);
+    z-index: 1;
+}
+.sidebar:hover {
+    width: 240px; /* Expanded width */
+}
+
+/* Default styles for the logo */
+.logo {
+    height: 40px; /* Smaller height */
+    width: 100%; 
+    margin-top: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo-collapsed {
+    display: block; 
+    width: 30px; /* Smaller logo when collapsed */
+    transition: all 0.5s ease;
+}
+.logo-expanded {
+    display: none; 
+    width: 70%; /* Reduced size for expanded logo */
+    transition: all 0.5s ease;
+}
+.sidebar:hover .logo-collapsed {
+    display: none; 
+}
+.sidebar:hover .logo-expanded {
+    display: block; 
+}
+
+/* SIDEBAR */
+.menu {
+    height: 70%;
+    position: relative;
+    list-style: none;
+    padding: 0;
+}
+.menu li {
+    padding: 0.8rem; /* Smaller padding */
+    margin: 6px 0; /* Reduced spacing */
+    border-radius: 6px; /* Slightly smaller radius */
+    transition: all 0.5s ease-in-out;
+}
+.menu li:hover {
+    background: var(--hover);
+}
+.menu li a {
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--montserrat);
+    font-size: 11px; /* Smaller font size */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Reduced gap */
+    text-transform: capitalize;
+    white-space: nowrap; 
+}
+.menu a span {
+    overflow: hidden;
+}
+.menu a i {
+    font-size: 1rem; /* Smaller icon size */
+}
+.switch {
+    position: absolute;
+    margin-top: 15px; /* Adjusted margin */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* END OF SIDEBAR */
+
+
+/* Responsive Sidebar */
+
+/* For 42-inch PC screens */
+@media (min-width: 2500px) {
+    .sidebar {
+        width: 100px;
+    }
+    .sidebar:hover {
+        width: 280px;
+    }
+    .menu li a {
+        font-size: 14px;
+    }
+}
+
+/* For Full HD desktops and 14-inch laptops */
+@media (min-width: 1366px) and (max-width: 1920px) {
+    .sidebar {
+        width: 70px;
+    }
+    .sidebar:hover {
+        width: 220px;
+    }
+    .menu li a {
+        font-size: 11px;
+    }
+}
+
+/* For tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .sidebar {
+        width: 70px;
+    }
+    .sidebar:hover {
+        width: 200px;
+    }
+    .menu li a {
+        font-size: 11px;
+    }
+}
+
+/* For smartphones */
+@media (max-width: 767px) {
+    .sidebar {
+        width: 60px; /* Smaller sidebar for mobile */
+    }
+    .sidebar:hover {
+        width: 180px; /* Reduced expanded width */
+    }
+    .menu li {
+        padding: 0.6rem;
+    }
+    .menu li a {
+        font-size: 10px; /* Smaller font size for mobile */
+        gap: 0.8rem;
+    }
+    .logo {
+        width: 160px; /* Smaller logo width */
+    }
+    .logo img {
+        width: 60%;
+    }
+}
+
+
+/* END OF SIDEBAR */

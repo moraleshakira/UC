@@ -1,0 +1,64 @@
+:root{
+    --montserrat:'Montserrat', sans-serif;
+    --nunito:'Nunito', sans-serif;
+	--roboto:'Roboto', sans-serif;
+
+    --light:#fff;
+    --hover:#464662;
+    --bg: #212143;
+    --h1:#212143;
+    --h1-blur:#212143cb;
+    --text:#BDBDBD;
+	--text-black:#05051d;
+    --num:#146ADC; 
+    --cards:#A1BEEA;
+    --bg-light:#FFFFFF;
+    --bg-dark:#F5F5F5;
+    --bg-darker:#B5B5C0;
+	--tb-dark:#dddde2;
+	--tb-ligt:#F5F5F5;
+    --yellow:#F0B732;
+	--staff:#A1BEEA;
+	--faculty:#212143;
+	--hr:#0066ff;
+	--red:#ff0022;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    gap: 5px;
+}
+
+.pagination-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    text-decoration: none;
+    color: var(--text-black);
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination-button:hover {
+    background-color: var(--hover);
+    color: white;
+}
+
+.pagination-button.active {
+    background-color: var(--bg);
+    color: white;
+    font-weight: bold;
+}
+
+.pagination-button:disabled {
+    color: #ddd;
+    pointer-events: none;
+}

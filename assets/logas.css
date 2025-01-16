@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root{
+    /* COLORS */
+    --mainBlue: #212143;
+    --mainYellow: #ffbc03;
+    --mainGrey: #bfbfc0;
+    --hoverBlack: #505050;
+    --body: #f8f9fa;
+    --mainWhite: white;
+    --loginForm:  rgba(255, 255, 255, 0.9); /* TRANSPARENT */
+    --boxShadows: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+
+    /* FONTS */
+    --Poppins: 'Poppins', sans-serif;
+    --Roboto: 'Roboto', sans-serif;
+    --Oswald: 'Oswald', sans-serif;
+    
+    /*  */
+
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family:var(--Poppins);
+    background: url('./images/login-bg.jpg') center center / cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.wrapper {
+    width: 420px;
+    padding: 30px;
+    background: var(--loginForm);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.wrapper img {
+    width: 230px;
+    margin-bottom: 20px;
+}
+
+header {
+    font-size: 18px; font-family: var(--Roboto);
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.submit {
+    border: none;
+    border-radius: 5px;
+    background: var(--mainBlue);
+    color: var(--mainGrey);
+    font-size: 16px; font-weight: 600;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit:hover {
+    background: var(--mainYellow);
+    color: var(--mainBlue);
+}
+
+/* Responsive Design */
+
+/* 42-inch PC */
+@media (min-width: 2560px) {
+    .wrapper {
+        width: 400px;
+        padding: 40px;
+    }
+
+    header {
+        font-size: 18px;
+    }
+
+    .wrapper img {
+        width: 280px;
+    }
+
+    .submit {
+        font-size: 18px;
+        padding: 15px;
+    }
+}
+
+/* Full HD desktops (1920px) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+    .wrapper {
+        width: 320px;
+    }
+
+    header {
+        font-size: 0px;
+    }
+
+    .wrapper img {
+        width: 80%;
+    }
+}
+
+/* 14-inch laptops */
+@media (min-width: 1366px) and (max-width: 1919px) {
+    .wrapper {
+        width: 320px;
+    }
+
+    header {
+        font-size: 18px;
+    }
+
+    .wrapper img {
+        width: 65%;
+    }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .wrapper {
+        width: 90%;
+    }
+
+    .wrapper img {
+        width: 50%;
+    }
+
+    header {
+        font-size: 18px;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+    .wrapper {
+        width: 90%;
+    }
+
+    .wrapper img {
+        width: 46%;
+    }
+
+    header {
+        font-size: 13px;
+    }
+
+    .submit {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 20px;
+    }
+
+    header {
+        font-size: 18px;
+    }
+
+    .wrapper img {
+        width: 120px;
+    }
+}

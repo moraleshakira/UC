@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root{
+    /* COLORS */
+    --mainBlue: #212143;
+    --mainYellow: #ffbc03;
+    --mainGrey: #bfbfc0;
+    --hoverBlack: #505050;
+    --body: #f8f9fa;
+    --mainWhite: white;
+    --loginForm:  rgba(255, 255, 255, 0.9); /* TRANSPARENT */
+    --boxShadows: 0px 4px 8px rgba(0, 0, 0, 0.2); 
+
+    /* FONTS */
+    --Poppins: 'Poppins', sans-serif;
+    --Roboto: 'Roboto', sans-serif;
+    --Oswald: 'Oswald', sans-serif;
+    
+    /*  */
+
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--Poppins);
+    background: url('./images/login-bg.jpg') center center / cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px; /* Added padding for smaller screens */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px; /* Ensures a consistent max size across devices */
+    padding: 30px;
+    background: var(--loginForm);
+    border-radius: 10px;
+    box-shadow: var(--boxShadows);
+    text-align: center;
+}
+
+.login-container img {
+    width: 65%; /* Flexible logo size */
+    max-width: 215px; /* Prevents the logo from getting too large */
+    margin-bottom: 20px;
+}
+
+.login-container header {
+    font-size: 18px; font-family: var(--Roboto);
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+.login-container p {
+    font-size: 12px; font-family: var(--Roboto);
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+.input-field {
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.input-field input {
+    height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    outline: none;
+    font-size: 12px; font-weight: 600;
+    color: var(--hovergrey);
+}
+
+.input-field label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 14px; font-weight: 500;
+    font-family: var(--Poppins); font-size: small; font-weight: 600;
+    color: var(--mainBlue);
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.input-field input:focus ~ label,
+.input-field input:valid ~ label {
+    top: -10px;
+    font-size: 12px;
+    color: var(--mainGrey);
+}
+
+.input-field input:focus,
+.input-field input:valid {
+    border-bottom: 1px solid var(--mainBlue);
+}
+
+.submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    background: var(--mainBlue);
+    color: var(--mainGrey);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background: var(--mainYellow);
+    color: var(--mainBlue);
+}
+
+.signin {
+    margin-top: 15px;
+    font-size: 14px; font-weight: 500; font-family: var(--Poppins);
+    
+}
+
+.signin a {
+    color: var(--mainBlue);
+    font-family: var(--Poppins ); font-style: italic;
+    text-decoration: none;
+    font-weight: 600; font-size: small   ;
+    transition: 0.3s;
+}
+
+.signin a:hover {
+    text-decoration: underline; 
+    color: var(--mainYellow);
+}
+
+
+/* Extra large screens (42-inch PC or larger) */
+@media (min-width: 1920px) {
+    .login-container {
+        max-width: 450px;
+    }
+
+    header {
+        font-size: 18px;
+    }
+    .login-container p{
+        font-size: 14px;
+    }
+}
+
+/* Large desktops (Full HD or larger) */
+@media (min-width: 1200px) and (max-width: 1920px) {
+    .login-container {
+        max-width: 320px;
+    }
+}
+
+/* Medium desktops and laptops (14" screens and smaller) */
+@media (min-width: 1024px) and (max-width: 1200px) {
+    .login-container {
+        max-width: 250px;
+    }
+}
+
+/* Tablets (Portrait and Landscape) */
+@media (max-width: 1024px) {
+    body {
+        padding: 20px;
+    }
+
+    .login-container {
+        margin: 50px auto;
+        max-width: 350px;
+    }
+
+    .login-container img {
+        width: 60%;
+    }
+}
+
+/* Smartphones */
+@media (max-width: 768px) {
+    .login-container {
+        max-width: 80%;
+    }
+
+    .login-container img {
+        width: 50%;
+    }
+
+    header {
+        font-size: 18px;
+    }
+    .login-container p{
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    header {
+        font-size: 13px;
+    }
+    .login-container p{
+        font-size: 12px;
+    }
+
+    .submit-button {
+        font-size: 14px;
+    }
+}

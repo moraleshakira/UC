@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root{
+    --montserrat:'Montserrat', sans-serif;
+    --nunito:'Nunito', sans-serif;
+	--roboto:'Roboto', sans-serif;
+
+    --light:#fff;
+    --hover:#464662;
+    --bg: #212143;
+    --h1:#212143;
+    --h1-blur:#212143cb;
+    --text:#BDBDBD;
+	--text-black:#05051d;
+    --num:#146ADC; 
+    --cards:#A1BEEA;
+    --bg-light:#FFFFFF;
+    --bg-dark:#F5F5F5;
+    --bg-darker:#B5B5C0;
+	--tb-dark:#dddde2;
+	--tb-ligt:#F5F5F5;
+    --yellow:#F0B732;
+	--staff:#A1BEEA;
+	--faculty:#212143;
+	--hr:#0066ff;
+	--red:#ff0022;
+}
+.tab {
+overflow: hidden;
+border: 1px solid var(--hover);
+border-radius: 5px 5px 0 0;
+background-color: var(--bg);
+margin: 1rem 90px;
+}
+
+.tablinks{
+    font-family: var(--montserrat);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.tab button {
+background-color: inherit;
+float: left;
+border: none;
+outline: none;
+cursor: pointer;
+padding: 14px 16px;
+transition: 0.3s;
+}
+
+
+.tab button:hover {
+background-color: var(--hover);
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+background-color: var(--hover);
+}
+
+/* Style the tab content */
+.tabcontent {
+display: none;
+padding: 6px 12px;
+border: 1px solid #ccc;
+border-top: none;
+margin: 1rem 90px;
+}
+
+.tabcontent img{
+    margin-left: 10rem;
+}
+
+.generate{
+    display: flex;
+    justify-content: center;
+}
+
+.generate-btn{
+    background-color: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    font-family: var(--montserrat);
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin: 10px 10px;
+}
+
+.generate-btn:hover{
+    background-color: var(--hover);
+}

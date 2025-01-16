@@ -1,0 +1,29 @@
+
+    .sort-arrow {
+        text-decoration: none;
+        margin-left: 0;
+        font-size: 12px;
+        color: gray;
+        transition: color 0.3s ease;
+    }
+
+    .sort-arrow.active {
+        font-weight: bold;
+        color: blue; /* Customize active arrow color */
+        text-decoration: underline;
+    }
+
+    .sort-arrow:hover {
+        color: green; /* Customize hover color */
+    }
+
+    th {
+        text-align: left;
+        position: relative;
+    }
+
+    .sort-arrow {
+        position: relative;
+        top: -1px;
+    }
+
