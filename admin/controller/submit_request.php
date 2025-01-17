@@ -218,23 +218,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
             $chairman_result = $stmt->get_result();
             
-            $chairman_name = 'Unknown Chairman'; 
             if ($chairman_result->num_rows > 0) {
                 $chairman_row = $chairman_result->fetch_assoc();
                 $chairman_name = $chairman_row['chairman_name'];
+                
+                $section->addText($chairman_name, ['bold' => true]);
+                $section->addText('Chairman, CITC', ['bold' => true]);
             }
             $stmt->close();
         } else {
             die("Failed to prepare statement: " . $con->error);
         }
-    } else {
-        $chairman_name = 'Unknown Chairman'; 
     }
-
-    // Add Chairman to Document
-    $section->addText($chairman_name, ['bold' => true]);
-    $section->addText('Chairman, CITC', ['bold' => true]);
-
+    
      // HR PERSONNEL
     if ($hr_id) {
     $hr_query = "SELECT hr_name FROM hr_personnel WHERE hr_id = ?";

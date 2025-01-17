@@ -2,34 +2,50 @@
 include('./includes/authentication.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteId'])) {
+    $response = array();
     $id = $_POST['deleteId'];
+    
+    $fileQuery = "SELECT filePath FROM itl_extracted_data WHERE id = ?";
+    $fileStmt = $con->prepare($fileQuery);
+    $fileStmt->bind_param("i", $id);
+    $fileStmt->execute();
+    $result = $fileStmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $filePath = './uploads/' . $row['filePath'];
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
+    
     $query = "DELETE FROM itl_extracted_data WHERE id = ?";
     $stmt = $con->prepare($query);
 
     if ($stmt === false) {
-        die("Error preparing query: " . $con->error);
-    }
-
-    $stmt->bind_param("i", $id);
-
-    if ($stmt->execute()) {
-        // Use SweetAlert2 for success message
-        echo "<script>Swal.fire('Record deleted successfully!', '', 'success').then(function() { window.location.reload(); });</script>";
+        $response['status'] = 'error';
+        $response['message'] = "Error preparing query: " . $con->error;
     } else {
-        // Use SweetAlert2 for error message
-        echo "<script>Swal.fire('Error deleting record: ' + '" . $stmt->error . "', '', 'error');</script>";
-    }
+        $stmt->bind_param("i", $id);
 
-    $stmt->close();
-    exit(); // Important to exit after handling the POST request
+        if ($stmt->execute()) {
+            $response['status'] = 'success';
+            $response['message'] = 'Record deleted successfully!';
+        } else {
+            $response['status'] = 'error';
+            $response['message'] = 'Error deleting record: ' . $stmt->error;
+        }
+        $stmt->close();
+    }
+    
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    exit();
 }
 
 include('./includes/header.php');
 include('./includes/sidebar.php');
 include('./includes/topbar.php');
-
 ?>
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <div class="tabular--wrapper">
@@ -297,30 +313,6 @@ include('./includes/topbar.php');
     </div>
 </div>
 
-<!-- Delete Confirmation Modal -->
-<!-- <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete this itl record?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form method="POST" action="">
-                    <input type="hidden" name="deleteId" id="deleteId">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const deleteButtons = document.querySelectorAll('.delete-link');
@@ -328,7 +320,6 @@ document.addEventListener("DOMContentLoaded", function() {
         button.addEventListener('click', function() {
             const deleteId = this.getAttribute('data-id');
 
-            // Use SweetAlert2 to confirm deletion
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -338,19 +329,38 @@ document.addEventListener("DOMContentLoaded", function() {
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Create a new form and submit it with the delete ID
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '';
+                    const formData = new FormData();
+                    formData.append('deleteId', deleteId);
 
-                    const deleteIdInput = document.createElement('input');
-                    deleteIdInput.type = 'hidden';
-                    deleteIdInput.name = 'deleteId';
-                    deleteIdInput.value = deleteId;
-
-                    form.appendChild(deleteIdInput);
-                    document.body.appendChild(form);
-                    form.submit(); // Submit the form
+                    fetch(window.location.href, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: data.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: data.message,
+                                icon: 'error'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An unexpected error occurred',
+                            icon: 'error'
+                        });
+                    });
                 }
             });
         });

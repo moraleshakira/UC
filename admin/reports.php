@@ -106,7 +106,7 @@ include('./includes/topbar.php');
                   </div>
 
                   <div class="form-group">
-                      <label for="end_month">End Month (optional)</label>
+                      <label for="end_month">End Month (Optional)</label>
                       <select id="end_month" class="form-control" name="end_month">
                         <option value="">Select End Month</option>
                           <?php 
@@ -116,8 +116,9 @@ include('./includes/topbar.php');
                           ?>
                       </select>
                   </div>
+
                     <!-- SELECT DEAN -->
-                    <div class="form-group">
+                <div class="form-group">
                     <label for="dean_name" class="form-label">Select Dean <span style="color:red;">*</span></label>
                     <div class="input-group">
                         <select class="form-control" id="dean_name" name="dean_id" required>
@@ -148,9 +149,9 @@ include('./includes/topbar.php');
 
                 <!-- SELECT CHAIRMAN -->
                 <div class="form-group">
-                    <label for="chairman_name" class="form-label">Select Chairman </label>
+                    <label for="chairman_name" class="form-label">Select Chairman (Optional)</label>
                     <div class="input-group">
-                        <select class="form-control" id="chairman_name" name="chairman_id" >
+                        <select class="form-control" id="chairman_name" name="chairman_id">
                             <option value="" selected>Select Chairman</option>
                             <?php
                             $sql = "SELECT chairman_id, chairman_name FROM chairmans";
@@ -160,7 +161,7 @@ include('./includes/topbar.php');
                                     echo '<option value="' . $row['chairman_id'] . '">' . $row['chairman_name'] . '</option>';
                                 }
                             } else {
-                                echo '<option value="">No deans found</option>';
+                                echo '<option value="">No chairmen found</option>';
                             }
                             ?>
                         </select>
@@ -177,8 +178,8 @@ include('./includes/topbar.php');
                 </div>
 
 
-                    <!-- SELECT HR -->
-                    <div class="form-group">
+                <!-- SELECT HR -->
+                <div class="form-group">
                     <label for="hr_name" class="form-label">Select HR Personnel <span style="color:red;">*</span></label>
                     <div class="input-group">
                         <select class="form-control" id="hr_name" name="hr_id" required>
@@ -221,17 +222,40 @@ include('./includes/topbar.php');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="addDeanForm">
+                    <form id="addDeanForm">
+                        <div class="mb-3">
+                            <label for="newDeanName" class="form-label">Dean Name:</label>
+                            <input type="text" class="form-control" id="newDeanName" name="dean_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Dean</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Dean Modal -->
+        <div class="modal fade" id="editDeanModal" tabindex="-1" aria-labelledby="editDeanModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editDeanModalLabel">Edit Dean</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editDeanForm">
+                            <input type="hidden" id="editDeanId" name="dean_id">
                             <div class="mb-3">
-                                <label for="newDeanName" class="form-label">Dean Name:</label>
-                                <input type="text" class="form-control" id="newDeanName" name="dean_name" required>
+                                <label for="editDeanName" class="form-label">Dean Name:</label>
+                                <input type="text" class="form-control" id="editDeanName" name="dean_name" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Add Dean</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Add CHAIRMAN Modal -->
         <div class="modal fade" id="addChairmanModal" tabindex="-1" aria-labelledby="addChairmanModalLabel" aria-hidden="true">
@@ -254,6 +278,29 @@ include('./includes/topbar.php');
             </div>
         </div>
 
+        <!-- Edit Chairman Modal -->
+        <div class="modal fade" id="editChairmanModal" tabindex="-1" aria-labelledby="editChairmanModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editChairmanModalLabel">Edit Chairman</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editChairmanForm">
+                            <input type="hidden" id="editChairmanId" name="chairman_id">
+                            <div class="mb-3">
+                                <label for="editChairmanName" class="form-label">Chairman Name:</label>
+                                <input type="text" class="form-control" id="editChairmanName" name="chairman_name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Add HR Personnel Modal -->
         <div class="modal fade" id="addHRModal" tabindex="-1" aria-labelledby="addHRModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -275,6 +322,27 @@ include('./includes/topbar.php');
             </div>
         </div>
 
+        <!-- Edit HR Personnel Modal -->
+        <div class="modal fade" id="editHRModal" tabindex="-1" aria-labelledby="editHRModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editHRModalLabel">Edit HR Personnel</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editHRForm">
+                            <input type="hidden" id="editHRId" name="hr_id">
+                            <div class="mb-3">
+                                <label for="editHRName" class="form-label">HR Name:</label>
+                                <input type="text" class="form-control" id="editHRName" name="hr_name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 <?php
@@ -304,89 +372,227 @@ include('./includes/footer.php');
         }
     });
 
+    //Add Dean 
     $(document).ready(function() {
-    // Handle Add Dean Form Submission
     $('#addDeanForm').submit(function(e) {
         e.preventDefault();
+        
+        console.log('Form data:', $(this).serialize());
+        
         $.ajax({
             url: './controller/add_dean.php',
             type: 'POST',
             data: $(this).serialize(),
+            dataType: 'json',
             success: function(response) {
-                $('#addDeanModal').modal('hide');
-                $('#dean_name').append('<option value="' + response.dean_id + '">' + response.dean_name + '</option>');
-                Swal.fire('Success!', 'New Dean added successfully!', 'success');
+                console.log('Success response:', response); 
+                if (response.status === 'success') {
+                    var newOption = new Option(response.dean_name, response.dean_id);
+                    $('#dean_name').append(newOption);
+                    $('#dean_name').val(response.dean_id);
+                    $('#newDeanName').val('');
+                    $('#addDeanModal').modal('hide');
+                    Swal.fire('Success!', 'New Dean added successfully!', 'success');
+                } else {
+                    console.error('Error response:', response); 
+                    Swal.fire('Error!', response.message || 'Failed to add Dean.', 'error');
+                }
             },
             error: function(xhr, status, error) {
+                console.error('AJAX Error:', error); 
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
                 Swal.fire('Error!', 'Failed to add new Dean.', 'error');
             }
         });
     });
 
-    // Handle Add HR Form Submission
+    //Add Chairman
+    $('#addChairmanForm').submit(function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            url: './controller/add_chairman.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    var newOption = new Option(response.chairman_name, response.chairman_id);
+                    $('#chairman_name').append(newOption);
+                    $('#chairman_name').val(response.chairman_id);
+                    $('#newChairmanName').val('');
+                    $('#addChairmanModal').modal('hide');
+                    Swal.fire('Success!', 'New Chairman added successfully!', 'success');
+                } else {
+                    Swal.fire('Error!', response.message || 'Failed to add Chairman.', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', error);
+                Swal.fire('Error!', 'Failed to add Chairman.', 'error');
+            }
+        });
+    });
+    
+    // Add HR Form 
     $('#addHRForm').submit(function(e) {
         e.preventDefault();
+        
         $.ajax({
             url: './controller/add_hr.php',
             type: 'POST',
             data: $(this).serialize(),
+            dataType: 'json',
             success: function(response) {
-                $('#addHRModal').modal('hide');
-                $('#hr_name').append('<option value="' + response.hr_id + '">' + response.hr_name + '</option>');
-                Swal.fire('Success!', 'New HR Personnel added successfully!', 'success');
+                if (response.status === 'success') {
+                    var newOption = new Option(response.hr_name, response.hr_id);
+                    $('#hr_name').append(newOption);
+                    $('#hr_name').val(response.hr_id);
+                    $('#newHRName').val('');
+                    $('#addHRModal').modal('hide');
+                    Swal.fire('Success!', 'New HR Personnel added successfully!', 'success');
+                } else {
+                    Swal.fire('Error!', response.message || 'Failed to add HR Personnel.', 'error');
+                }
             },
             error: function(xhr, status, error) {
-                Swal.fire('Error!', 'Failed to add new HR Personnel.', 'error');
+                console.error('AJAX Error:', error);
+                Swal.fire('Error!', 'Failed to add HR Personnel.', 'error');
             }
         });
     });
 
     // Edit Dean Button
-    $('#editDeanBtn').click(function() {
-        const deanId = $('#dean_name').val();
-        if (!deanId) {
-            Swal.fire('Error!', 'Please select a Dean to edit.', 'error');
-            return;
-        }
-        
-        // Fetch current details of the selected dean and populate in the modal
-        $.ajax({
-            url: './controller/get_dean.php',
-            type: 'GET',
-            data: { dean_id: deanId },
-            success: function(response) {
-                const data = JSON.parse(response);
-                $('#editDeanName').val(data.dean_name);
-                $('#editDeanForm').attr('action', './controller/edit_dean.php');
-                $('#editDeanModal').modal('show');
-            },
-            error: function() {
-                Swal.fire('Error!', 'Failed to fetch Dean details for editing.', 'error');
+    $(document).ready(function() {
+        $('#editDeanBtn').click(function() {
+            const deanId = $('#dean_name').val();
+            const deanName = $('#dean_name option:selected').text();
+
+            if (!deanId) {
+                Swal.fire('Error!', 'Please select a Dean to edit.', 'error');
+                return;
             }
+
+            $('#editDeanId').val(deanId);
+            $('#editDeanName').val(deanName);
+            $('#editDeanModal').modal('show');
+        });
+
+        $('#editDeanForm').submit(function(e) {
+            e.preventDefault();
+            const deanId = $('#editDeanId').val();
+            const deanName = $('#editDeanName').val();
+
+            $.ajax({
+                url: './controller/edit_dean.php',
+                type: 'POST',
+                data: {
+                    dean_id: deanId,
+                    dean_name: deanName
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $('#dean_name option[value="' + deanId + '"]').text(deanName);
+                        Swal.fire('Success!', 'Dean updated successfully!', 'success');
+                        $('#editDeanModal').modal('hide');
+                    } else {
+                        Swal.fire('Error!', response.message || 'Failed to update Dean.', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error!', 'Failed to update Dean.', 'error');
+                }
+            });
         });
     });
 
-    // Edit HR Button
+    // Edit Chairman Button
+    $(document).ready(function() {
+        $('#editChairmanBtn').click(function() {
+            const chairmanId = $('#chairman_name').val();
+            const chairmanName = $('#chairman_name option:selected').text();
+
+            if (!chairmanId) {
+                Swal.fire('Error!', 'Please select a Chairman to edit.', 'error');
+                return;
+            }
+
+            $('#editChairmanId').val(chairmanId);
+            $('#editChairmanName').val(chairmanName);
+            $('#editChairmanModal').modal('show');
+        });
+
+        $('#editChairmanForm').submit(function(e) {
+            e.preventDefault();
+            const chairmanId = $('#editChairmanId').val();
+            const chairmanName = $('#editChairmanName').val();
+
+            $.ajax({
+                url: './controller/edit_chairman.php',
+                type: 'POST',
+                data: {
+                    chairman_id: chairmanId,
+                    chairman_name: chairmanName
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $('#chairman_name option[value="' + chairmanId + '"]').text(chairmanName);
+                        Swal.fire('Success!', 'Chairman updated successfully!', 'success');
+                        $('#editChairmanModal').modal('hide');
+                    } else {
+                        Swal.fire('Error!', response.message || 'Failed to update Chairman.', 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error!', 'Failed to update Chairman.', 'error');
+                }
+            });
+        });
+    });
+
+    //Edit HR
     $('#editHRBtn').click(function() {
         const hrId = $('#hr_name').val();
+        const hrName = $('#hr_name option:selected').text();
+
         if (!hrId) {
             Swal.fire('Error!', 'Please select an HR Personnel to edit.', 'error');
             return;
         }
+
+        $('#editHRId').val(hrId);
+        $('#editHRName').val(hrName);
+        $('#editHRModal').modal('show');
+    });
+
+    $('#editHRForm').submit(function(event) {
+        event.preventDefault();
         
-        // Fetch current details of the selected HR and populate in the modal
+        const hrId = $('#editHRId').val();
+        const hrName = $('#editHRName').val();
+
         $.ajax({
-            url: './controller/get_hr.php',
-            type: 'GET',
-            data: { hr_id: hrId },
+            url: './controller/edit_hr.php',
+            type: 'POST',
+            data: {
+                hr_id: hrId,
+                hr_name: hrName
+            },
+            dataType: 'json',
             success: function(response) {
-                const data = JSON.parse(response);
-                $('#newHRName').val(data.hr_name);
-                $('#addHRForm').attr('action', './controller/update_hr.php');
-                $('#addHRModal').modal('show');
+                if (response.status === 'success') {
+                    $('#hr_name option[value="' + hrId + '"]').text(hrName);
+                    Swal.fire('Success!', 'HR Personnel updated successfully!', 'success');
+                    $('#editHRModal').modal('hide');
+                } else {
+                    Swal.fire('Error!', response.message || 'Failed to update HR Personnel.', 'error');
+                }
             },
             error: function() {
-                Swal.fire('Error!', 'Failed to fetch HR details for editing.', 'error');
+                Swal.fire('Error!', 'Failed to update HR Personnel.', 'error');
             }
         });
     });
@@ -399,7 +605,6 @@ include('./includes/footer.php');
             return;
         }
 
-        // Confirm deletion
         Swal.fire({
             title: 'Are you sure?',
             text: 'This action cannot be undone.',
@@ -409,21 +614,25 @@ include('./includes/footer.php');
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Perform the delete action
                 $.ajax({
                     url: './controller/delete_dean.php',
                     type: 'POST',
                     data: { dean_id: deanId },
+                    dataType: 'json', 
                     success: function(response) {
+                        console.log('Delete response:', response); 
                         if (response.status === 'success') {
                             $('#dean_name option[value="' + deanId + '"]').remove();
-                            Swal.fire('Deleted!', 'Dean has been deleted.', 'success');
+                            $('#dean_name').val('');
+                            Swal.fire('Deleted!', 'Dean has been deleted successfully.', 'success');
                         } else {
-                            Swal.fire('Error!', 'Failed to delete Dean.', 'error');
+                            Swal.fire('Error!', response.message || 'Failed to delete Dean.', 'error');
                         }
                     },
-                    error: function() {
-                        Swal.fire('Error!', 'Failed to delete Dean.', 'error');
+                    error: function(xhr, status, error) {
+                        console.error('Delete error:', error);
+                        console.error('Response:', xhr.responseText);
+                        Swal.fire('Error!', 'Failed to delete Dean. Please try again.', 'error');
                     }
                 });
             }
@@ -432,13 +641,12 @@ include('./includes/footer.php');
 
      // Delete CHAIRMAN Button
      $('#deleteChairmanBtn').click(function() {
-        const hrId = $('#chairman_name').val();
-        if (!hrId) {
-            Swal.fire('Error!', 'Please select chairman to delete.', 'error');
+        const chairmanId = $('#chairman_name').val();
+        if (!chairmanId) {
+            Swal.fire('Error!', 'Please select a Chairman to delete.', 'error');
             return;
         }
 
-        // Confirm deletion
         Swal.fire({
             title: 'Are you sure?',
             text: 'This action cannot be undone.',
@@ -448,17 +656,18 @@ include('./includes/footer.php');
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Perform the delete action
                 $.ajax({
                     url: './controller/delete_chairman.php',
                     type: 'POST',
                     data: { chairman_id: chairmanId },
+                    dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
                             $('#chairman_name option[value="' + chairmanId + '"]').remove();
+                            $('#chairman_name').val('');
                             Swal.fire('Deleted!', 'Chairman has been deleted.', 'success');
                         } else {
-                            Swal.fire('Error!', 'Failed to delete Chairman.', 'error');
+                            Swal.fire('Error!', response.message || 'Failed to delete Chairman.', 'error');
                         }
                     },
                     error: function() {
@@ -477,7 +686,6 @@ include('./includes/footer.php');
             return;
         }
 
-        // Confirm deletion
         Swal.fire({
             title: 'Are you sure?',
             text: 'This action cannot be undone.',
@@ -487,17 +695,18 @@ include('./includes/footer.php');
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Perform the delete action
                 $.ajax({
                     url: './controller/delete_hr.php',
                     type: 'POST',
                     data: { hr_id: hrId },
+                    dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
                             $('#hr_name option[value="' + hrId + '"]').remove();
+                            $('#hr_name').val('');
                             Swal.fire('Deleted!', 'HR Personnel has been deleted.', 'success');
                         } else {
-                            Swal.fire('Error!', 'Failed to delete HR Personnel.', 'error');
+                            Swal.fire('Error!', response.message || 'Failed to delete HR Personnel.', 'error');
                         }
                     },
                     error: function() {

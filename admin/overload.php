@@ -9,30 +9,30 @@ include('./includes/topbar.php');
         <!-- Search Bar -->
         <div class="filter">
             <input type="text" id="search_user" placeholder="Search..." 
-                   oninput="updateTable()" 
-                   style="width: 174px; margin-right: 10px; height: 37px; margin-top: 6px;">
+                style="width: 174px; margin-right: 10px; height: 37px; margin-top: 22px;" 
+                onkeyup="searchUsers()">
         </div>
-        
+                
         <!-- YEAR FILTER -->
         <?php
-        $sql = "SELECT academic_year_id, academic_year FROM academic_years";
-        $result = $con->query($sql);
-
-        $academic_years = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $academic_years[] = $row;
-            }
-        }
+           $sql = "SELECT academic_year_id, academic_year FROM academic_years";
+           $result = $con->query($sql);
+           if ($result->num_rows > 0) {
+               $academicYears = [];
+               while ($row = $result->fetch_assoc()) {
+                   $academicYears[] = $row;
+               }
+           } else {
+               echo "No academic years found.";
+           }
         ?>
         <div class="filter">
-            <select id="academic_year" onchange="updateTable()" 
-                    style="width: 174px; margin-right: 10px; height: 37px; margin-top: 6px;">
-                <option value="" disabled>Select Academic Year</option>
+            <select id="academic_year" onchange="updateTable()">
+                <option value="" disabled selected>Select Academic Year</option>
                 <?php
-                foreach ($academic_years as $year) {
-                    $selected = isset($academic_year) && $academic_year == $year['academic_year_id'] ? 'selected' : '';
-                    echo '<option value="' . $year['academic_year_id'] . '" ' . $selected . '>' . htmlspecialchars($year['academic_year']) . '</option>';
+                foreach ($academicYears as $year) {
+                    $selected = isset($_GET['academic_year_id']) && $_GET['academic_year_id'] == $year['academic_year_id'] ? 'selected' : '';
+                    echo '<option value="' . $year['academic_year_id'] . '" ' . $selected . '>' . $year['academic_year'] . '</option>';
                 }
                 ?>
             </select>
@@ -69,10 +69,11 @@ include('./includes/topbar.php');
         $offset = ($page - 1) * $limit;
 
         $search_user = isset($_GET['search_user']) ? $_GET['search_user'] : '';
-        $academic_year = isset($_GET['academic_year']) ? $_GET['academic_year'] : '';
+        $academic_year = isset($_GET['academic_year_id']) ? $_GET['academic_year_id'] : ''; 
         if (!empty($academic_year)) {
-            $query .= " AND d.academic_year_id = $academic_year";
+            $query .= " AND d.academic_year_id = $academic_year"; 
         }
+        
 
         $semester = isset($_GET['semester']) ? $_GET['semester'] : '';
 
@@ -80,7 +81,6 @@ include('./includes/topbar.php');
         $creditThreshold = 12;
              $counter = 1; 
 
-        // Calculate total records
         $countQuery = "SELECT COUNT(*) AS totalRecords 
                     FROM dtr_extracted_data d
                     JOIN employee e ON d.userId = e.userId
@@ -178,162 +178,230 @@ include('./includes/topbar.php');
             <tbody id="table-body">
             <?php 
                 $processedUsers = [];
+                $hasData = false;
                 while ($row = $result->fetch_assoc()): 
                     if (in_array($row['userId'], $processedUsers)) {
                         continue;
                     }
                     $processedUsers[] = $row['userId'];
-                ?>
-                    <tr>
-                        <td><?php echo $counter++; ?></td>
-                        <td><?php echo htmlspecialchars($row['firstName'] . ' ' . $row['lastName']); ?></td>
-                        <td><?php echo htmlspecialchars($row['designated'] ?? 'N/A'); ?></td>
-                        <td><?php echo htmlspecialchars($row['academic_year'] ?? 'N/A'); ?></td>
+                    $hasData = true;
+            ?>
+                <tr>
+                    <td><?php echo $counter++; ?></td>
+                    <td><?php echo htmlspecialchars($row['firstName'] . ' ' . $row['lastName']); ?></td>
+                    <td><?php echo htmlspecialchars($row['designated'] ?? 'N/A'); ?></td>
+                    <td><?php echo htmlspecialchars($row['academic_year'] ?? 'N/A'); ?></td>
 
-                        <?php
-                        $firstSemMonths = ['August', 'September', 'October', 'November', 'December'];
-                        $secondSemMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+                    <?php
+                    $firstSemMonths = ['August', 'September', 'October', 'November', 'December'];
+                    $secondSemMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
-                        $userEntries = $con->query("SELECT * FROM dtr_extracted_data 
-                            WHERE userId = {$row['userId']}");
+                    $userEntries = $con->query("SELECT * FROM dtr_extracted_data 
+                        WHERE userId = {$row['userId']}");
 
-                        $monthData = array_fill_keys(array_merge($firstSemMonths, $secondSemMonths), 
-                            ['credits' => 0, 'overload' => 0]);
+                    $monthData = array_fill_keys(array_merge($firstSemMonths, $secondSemMonths), 
+                        ['credits' => 0, 'overload' => 0]);
 
-                        while ($entry = $userEntries->fetch_assoc()) {
-                            $monthYear = date('F', strtotime($entry['month_year']));
-                            
-                            $totalCredits = 0;
-                            $weekOverloads = 0;
+                    while ($entry = $userEntries->fetch_assoc()) {
+                        $monthYear = date('F', strtotime($entry['month_year']));
+                        
+                        $totalCredits = 0;
+                        $weekOverloads = 0;
 
-                            foreach (['week1_overload', 'week2_overload', 'week3_overload', 'week4_overload'] as $week) {
-                                $weekOverloads += $entry[$week];
-                                if ($entry[$week] > $creditThreshold) {
-                                    $totalCredits += ($entry[$week] - $creditThreshold);
-                                }
+                        foreach (['week1_overload', 'week2_overload', 'week3_overload', 'week4_overload'] as $week) {
+                            $weekOverloads += $entry[$week];
+                            if ($entry[$week] > $creditThreshold) {
+                                $totalCredits += ($entry[$week] - $creditThreshold);
                             }
-
-                            if ($totalCredits > 0) {
-                                $weekOverloads -= $totalCredits;
-                                if ($weekOverloads < 0) {
-                                    $weekOverloads = 0;
-                                }
-                            }
-
-                            $monthData[$monthYear] = [
-                                'credits' => $totalCredits,
-                                'overload' => $weekOverloads
-                            ];
                         }
 
-                        foreach ($firstSemMonths as $month) {
-                            echo "<td class='first-sem'>";
-                            if ($monthData[$month]['credits'] > 0 || $monthData[$month]['overload'] > 0) {
-                                echo "<strong>Total Credits: </strong>" . $monthData[$month]['credits'] . "<br>";
-                                echo "<strong>Overload</strong>: " . $monthData[$month]['overload'];
+                        if ($totalCredits > 0) {
+                            $weekOverloads -= $totalCredits;
+                            if ($weekOverloads < 0) {
+                                $weekOverloads = 0;
                             }
-                            echo "</td>";
                         }
 
-                        foreach ($secondSemMonths as $month) {
-                            echo "<td class='second-sem'>";
-                            if ($monthData[$month]['credits'] > 0 || $monthData[$month]['overload'] > 0) {
-                                echo "<strong>Total Credits: </strong>" . $monthData[$month]['credits'] . "<br>";
-                                echo "<strong>Overload</strong>: " . $monthData[$month]['overload'];
-                            }
-                            echo "</td>";
+                        $monthData[$monthYear] = [
+                            'credits' => $totalCredits,
+                            'overload' => $weekOverloads
+                        ];
+                    }
+
+                    foreach ($firstSemMonths as $month) {
+                        echo "<td class='first-sem'>";
+                        if ($monthData[$month]['credits'] > 0 || $monthData[$month]['overload'] > 0) {
+                            echo "<strong>Total Credits: </strong>" . $monthData[$month]['credits'] . "<br>";
+                            echo "<strong>Overload</strong>: " . $monthData[$month]['overload'];
                         }
-                        ?>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
+                        echo "</td>";
+                    }
+
+                    foreach ($secondSemMonths as $month) {
+                        echo "<td class='second-sem'>";
+                        if ($monthData[$month]['credits'] > 0 || $monthData[$month]['overload'] > 0) {
+                            echo "<strong>Total Credits: </strong>" . $monthData[$month]['credits'] . "<br>";
+                            echo "<strong>Overload</strong>: " . $monthData[$month]['overload'];
+                        }
+                        echo "</td>";
+                    }
+                    ?>
+                </tr>
+            <?php endwhile; ?>
+
+            <?php if (!$hasData): ?>
+                <tr><td colspan="12" class="text-center">No records found.</td></tr>
+            <?php endif; ?>
+        </tbody>
+
         </table>
         <div class="pagination" id="pagination"></div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let semester = document.getElementById("semester").value;
-    if (!semester) {
-        document.getElementById("semester").value = 1;
-        semester = 1; 
-    }
-    updateTable();
-});
-
-function updateTable() {
-    let semester = document.getElementById("semester").value;
-    let academicYear = document.getElementById("academic_year").value;
-    let firstSemCells = document.getElementsByClassName('first-sem');
-    let secondSemCells = document.getElementsByClassName('second-sem');
-
-    // Hide all cells initially
-    for (let cell of firstSemCells) {
-        cell.style.display = 'none';
-    }
-    for (let cell of secondSemCells) {
-        cell.style.display = 'none';
-    }
-
-    // Show cells based on semester selection
-    if (semester == 1) {
-        for (let cell of firstSemCells) {
-            cell.style.display = 'table-cell';
+    document.addEventListener('DOMContentLoaded', function() {
+        let semester = document.getElementById("semester").value;
+        if (!semester) {
+            document.getElementById("semester").value = 1;
         }
-    } else if (semester == 2) {
-        for (let cell of secondSemCells) {
-            cell.style.display = 'table-cell';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const academicYearId = urlParams.get('academic_year_id');
+        const semesterId = urlParams.get('semester_id');
+
+        if (academicYearId) {
+            const academicSelect = document.getElementById('academic_year');
+            academicSelect.value = academicYearId;
         }
+
+        if (semesterId) {
+            const semesterSelect = document.getElementById('semester');
+            semesterSelect.value = semesterId;
+        }
+
+        document.getElementById('semester').addEventListener('change', function() {
+            updateTable();
+            updateVisibility();
+        });
+
+        updateVisibility();
+    });
+
+    function updateTable() {
+        const academicYear = document.getElementById('academic_year').value;
+        const semester = document.getElementById('semester').value;
+        
+        let url = new URL(window.location.href);
+        
+        if (academicYear) {
+            url.searchParams.set('academic_year_id', academicYear);
+        } else {
+            url.searchParams.delete('academic_year_id');
+        }
+        
+        if (semester) {
+            url.searchParams.set('semester_id', semester);
+        } else {
+            url.searchParams.delete('semester_id');
+        }
+        
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
     }
 
-    // Fetch data using AJAX
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", `fetch_data.php?semester=${semester}&academic_year=${academicYear}`, true);
+    function updateVisibility() {
+        const semester = document.getElementById("semester").value;
+        const firstSemCells = document.getElementsByClassName('first-sem');
+        const secondSemCells = document.getElementsByClassName('second-sem');
+        
+        Array.from(firstSemCells).forEach(cell => {
+            cell.style.display = semester == '1' ? 'table-cell' : 'none';
+        });
+        
+        Array.from(secondSemCells).forEach(cell => {
+            cell.style.display = semester == '2' ? 'table-cell' : 'none';
+        });
+    }
 
-    xhr.onload = function() {
-        if (xhr.status == 200) {
-            let data = JSON.parse(xhr.responseText);
-            let tableBody = document.getElementById("table-body");
-            tableBody.innerHTML = '';
+    function fetchData() {
+        const semester = document.getElementById("semester").value;
+        const academicYear = document.getElementById("academic_year").value;
+        
+        fetch(`fetch_data.php?semester=${semester}&academic_year=${academicYear}`)
+            .then(response => response.json())
+            .then(data => {
+                updateTableContent(data);
+                updateVisibility();
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
-            data.forEach(function(row) {
-                let tr = document.createElement("tr");
-                let basicCells = `
-                    <td>${row.employeeId}</td>
-                    <td>${row.firstName} ${row.lastName}</td>
-                    <td>${row.designated || 'N/A'}</td>
-                `;
+    function updateTableContent(data) {
+        const tableBody = document.getElementById("table-body");
+        tableBody.innerHTML = '';
+        
+        data.forEach((row, index) => {
+            const tr = document.createElement("tr");
+            
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${row.firstName} ${row.lastName}</td>
+                <td>${row.designated || 'N/A'}</td>
+                <td>${row.academic_year || 'N/A'}</td>
+                <td class="first-sem">${formatMonthData(row.august)}</td>
+                <td class="first-sem">${formatMonthData(row.september)}</td>
+                <td class="first-sem">${formatMonthData(row.october)}</td>
+                <td class="first-sem">${formatMonthData(row.november)}</td>
+                <td class="first-sem">${formatMonthData(row.december)}</td>
+                <td class="second-sem">${formatMonthData(row.january)}</td>
+                <td class="second-sem">${formatMonthData(row.february)}</td>
+                <td class="second-sem">${formatMonthData(row.march)}</td>
+                <td class="second-sem">${formatMonthData(row.april)}</td>
+                <td class="second-sem">${formatMonthData(row.may)}</td>
+                <td class="second-sem">${formatMonthData(row.june)}</td>
+                <td class="second-sem">${formatMonthData(row.july)}</td>
+            `;
+            
+            tableBody.appendChild(tr);
+        });
+        
+        updateVisibility();
+    }
 
-                let firstSemCells = `
-                    <td class="first-sem">${formatMonthData(row.august)}</td>
-                    <td class="first-sem">${formatMonthData(row.september)}</td>
-                    <td class="first-sem">${formatMonthData(row.october)}</td>
-                    <td class="first-sem">${formatMonthData(row.november)}</td>
-                    <td class="first-sem">${formatMonthData(row.december)}</td>
-                `;
+    function formatMonthData(data) {
+        if (!data || (!data.credits && !data.overload)) return '';
+        return `<strong>Total Credits:</strong> ${data.credits || 0}<br><strong>Overload:</strong> ${data.overload || 0}`;
+    }
 
-                let secondSemCells = `
-                    <td class="second-sem">${formatMonthData(row.january)}</td>
-                    <td class="second-sem">${formatMonthData(row.february)}</td>
-                    <td class="second-sem">${formatMonthData(row.march)}</td>
-                    <td class="second-sem">${formatMonthData(row.april)}</td>
-                    <td class="second-sem">${formatMonthData(row.may)}</td>
-                    <td class="second-sem">${formatMonthData(row.june)}</td>
-                    <td class="second-sem">${formatMonthData(row.july)}</td>
-                `;
+    function searchUsers() {
+        const searchValue = document.getElementById('search_user').value.toLowerCase();
+        const tableBody = document.getElementById('table-body');
+        const rows = tableBody.getElementsByTagName('tr');
+        
+        let visibleRows = 0;
+        
+        Array.from(rows).forEach(row => {
+            const facultyCell = row.getElementsByTagName('td')[1];
+            if (facultyCell) {
+                const facultyName = facultyCell.textContent || facultyCell.innerText;
+                const visible = facultyName.toLowerCase().includes(searchValue);
+                row.style.display = visible ? '' : 'none';
+                if (visible) visibleRows++;
+            }
+        });
 
-                tr.innerHTML = basicCells + firstSemCells + secondSemCells;
-                tableBody.appendChild(tr);
-            });
+        const existingMessage = document.getElementById('no-results-message');
+        if (existingMessage) {
+            existingMessage.remove();
         }
-    };
-    xhr.send();
-}
 
-function formatMonthData(data) {
-    if (!data) return '';
-    return `Total Credits: ${data.credits}<br>Overload: ${data.overload}`;
-}
+        if (visibleRows === 0) {
+            const message = document.createElement('tr');
+            message.id = 'no-results-message';
+            message.innerHTML = `<td colspan="${rows[0]?.cells.length || 16}" style="text-align: center; padding: 20px;">No results found</td>`;
+            tableBody.appendChild(message);
+        }
+    }
 
 </script>

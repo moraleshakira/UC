@@ -21,16 +21,17 @@ $loggedInUserId = $_SESSION['auth_user']['userId'];
             echo "No academic years found.";
         }
         ?>
-        <div class="filter">
-            <select id="academic_year" onchange="updateTable()" style="width: 220px; margin-right: 10px;">
-                <option value="" disabled selected>Select Academic Year</option>
-                <?php
-                foreach ($academicYears as $year) {
-                    echo '<option value="' . $year['academic_year_id'] . '">' . $year['academic_year'] . '</option>';
-                }
-                ?>
-            </select>
-        </div>
+       <div class="filter">
+        <select id="academic_year" onchange="updateTable()">
+            <option value="" disabled selected>Select Academic Year</option>
+            <?php
+            foreach ($academicYears as $year) {
+                $selected = isset($_GET['academic_year_id']) && $_GET['academic_year_id'] == $year['academic_year_id'] ? 'selected' : '';
+                echo '<option value="' . $year['academic_year_id'] . '" ' . $selected . '>' . $year['academic_year'] . '</option>';
+            }
+            ?>
+        </select>
+    </div>
 
         <?php
         $sql = "SELECT semester_id, semester_name FROM semesters";
@@ -262,23 +263,52 @@ document.addEventListener('DOMContentLoaded', function() {
     let semester = document.getElementById("semester").value;
     if (!semester) {
         document.getElementById("semester").value = 1;
-        semester = 1; 
+        semester = 1;
     }
-    updateTable();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const academicYearId = urlParams.get('academic_year_id');
+    if (academicYearId) {
+        const select = document.getElementById('academic_year');
+        select.value = academicYearId;
+    }
+
+    updateVisibility();
+    fetchData();
 });
 
 function updateTable() {
-    let semester = document.getElementById("semester").value;
-    let firstSemCells = document.getElementsByClassName('first-sem');
-    let secondSemCells = document.getElementsByClassName('second-sem');
+    const academicYear = document.getElementById('academic_year').value;
+    const semester = document.getElementById('semester').value;
+    
+    let url = new URL(window.location.href);
+    
+    if (academicYear) {
+        url.searchParams.set('academic_year_id', academicYear);
+    } else {
+        url.searchParams.delete('academic_year_id');
+    }
+    
+    if (semester) {
+        url.searchParams.set('semester_id', semester);
+    }
+    
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
 
+function updateVisibility() {
+    const semester = document.getElementById("semester").value;
+    const firstSemCells = document.getElementsByClassName('first-sem');
+    const secondSemCells = document.getElementsByClassName('second-sem');
+    
     for (let cell of firstSemCells) {
         cell.style.display = 'none';
     }
     for (let cell of secondSemCells) {
         cell.style.display = 'none';
     }
-
+    
     if (semester == 1) {
         for (let cell of firstSemCells) {
             cell.style.display = 'table-cell';
@@ -288,50 +318,69 @@ function updateTable() {
             cell.style.display = 'table-cell';
         }
     }
+}
 
-    let academicYear = document.getElementById("academic_year").value;
+function fetchData() {
+    const semester = document.getElementById("semester").value;
+    const academicYear = document.getElementById("academic_year").value;
+    
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "fetch_data.php?semester=" + semester + "&academic_year=" + academicYear, true);
+    xhr.open("GET", `fetch_data.php?semester=${semester}&academic_year=${academicYear}`, true);
+    
     xhr.onload = function() {
         if (xhr.status == 200) {
-            let data = JSON.parse(xhr.responseText);
-            let tableBody = document.getElementById("table-body");
-            tableBody.innerHTML = '';
-
-            data.forEach(function(row) {
-                let tr = document.createElement("tr");
-                let basicCells = `
-                    <td>${row.employeeId}</td>
-                    <td>${row.firstName} ${row.lastName}</td>
-                    <td>${row.designated || 'N/A'}</td>
-                `;
-
-                let firstSemCells = `
-                    <td class="first-sem">${formatMonthData(row.august)}</td>
-                    <td class="first-sem">${formatMonthData(row.september)}</td>
-                    <td class="first-sem">${formatMonthData(row.october)}</td>
-                    <td class="first-sem">${formatMonthData(row.november)}</td>
-                    <td class="first-sem">${formatMonthData(row.december)}</td>
-                `;
-
-                let secondSemCells = `
-                    <td class="second-sem">${formatMonthData(row.january)}</td>
-                    <td class="second-sem">${formatMonthData(row.february)}</td>
-                    <td class="second-sem">${formatMonthData(row.march)}</td>
-                    <td class="second-sem">${formatMonthData(row.april)}</td>
-                    <td class="second-sem">${formatMonthData(row.may)}</td>
-                    <td class="second-sem">${formatMonthData(row.june)}</td>
-                    <td class="second-sem">${formatMonthData(row.july)}</td>
-                `;
-
-                tr.innerHTML = basicCells + firstSemCells + secondSemCells;
-                tableBody.appendChild(tr);
-            });
-
-            updateTable();
+            try {
+                const data = JSON.parse(xhr.responseText);
+                updateTableContent(data);
+            } catch (e) {
+                console.error('Error parsing JSON:', e);
+            }
         }
     };
+    
+    xhr.onerror = function() {
+        console.error('Request failed');
+    };
+    
     xhr.send();
+}
+
+function updateTableContent(data) {
+    const tableBody = document.getElementById("table-body");
+    tableBody.innerHTML = '';
+    
+    data.forEach(function(row) {
+        const tr = document.createElement("tr");
+        
+        const basicCells = `
+            <td>${row.employeeId}</td>
+            <td>${row.firstName} ${row.lastName}</td>
+            <td>${row.designated || 'N/A'}</td>
+        `;
+        
+        const firstSemCells = `
+            <td class="first-sem">${formatMonthData(row.august)}</td>
+            <td class="first-sem">${formatMonthData(row.september)}</td>
+            <td class="first-sem">${formatMonthData(row.october)}</td>
+            <td class="first-sem">${formatMonthData(row.november)}</td>
+            <td class="first-sem">${formatMonthData(row.december)}</td>
+        `;
+        
+        const secondSemCells = `
+            <td class="second-sem">${formatMonthData(row.january)}</td>
+            <td class="second-sem">${formatMonthData(row.february)}</td>
+            <td class="second-sem">${formatMonthData(row.march)}</td>
+            <td class="second-sem">${formatMonthData(row.april)}</td>
+            <td class="second-sem">${formatMonthData(row.may)}</td>
+            <td class="second-sem">${formatMonthData(row.june)}</td>
+            <td class="second-sem">${formatMonthData(row.july)}</td>
+        `;
+        
+        tr.innerHTML = basicCells + firstSemCells + secondSemCells;
+        tableBody.appendChild(tr);
+    });
+    
+    updateVisibility();
 }
 
 function formatMonthData(data) {
